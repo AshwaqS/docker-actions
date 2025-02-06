@@ -32,7 +32,9 @@ jobs:
 
       # Step 4: Restore NuGet packages
       - name: Restore NuGet packages
-        run: dotnet restore  # This will restore NuGet packages defined in your .NET project
+        run: dotnet restore  
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
 
       # Step 5: Build the project
       - name: Build the project
