@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   container-test-job:
-    runs-on: Ubuntu
+    runs-on: self-hosted
     container:
       image: node:18
       env:
