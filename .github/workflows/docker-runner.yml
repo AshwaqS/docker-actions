@@ -13,14 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Display a message
-        run: echo "Running on the self-hosted runner!"
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'  
 
-      - name: Install Dependencies
+      
+      - name: Print message
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-
-      - name: Run a simple shell command
-        run: |
-          echo "This is a sample command executed on the self-hosted runner."
+          echo "Hello from self-hosted runner!"
+          python -c "print('Hello from Python script on self-hosted runner!')"
