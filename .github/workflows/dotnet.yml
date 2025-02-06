@@ -19,7 +19,9 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0'  # You can adjust the version if necessary
+          dotnet-version: '6.0' 
+        env:
+          DOTNET_INSTALL_DIR: $HOME/.dotnet
 
       # Step 3: Print a message
       - name: Print message
