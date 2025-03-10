@@ -1,0 +1,30 @@
+name: Build & Verify build
+
+on:
+  push:
+    branches:
+      - main
+env:
+  dell_cert_path: 'hello'
+  project_path: 'hello'
+  config_file: '.hello'
+  test_framework: 'nunit'
+  test_file_path: 'hello'
+  source_dir: 'hello'
+  language_type: '.net-core' 
+  dell_sonarqube_url: 'https://sonarqube.net'
+  
+jobs:
+  env-vars:
+    runs-on: ubuntu-latest
+    outputs:
+      dell_cert_path: ${{ env.dell_cert_path }}
+      project_path: ${{ env.project_path }}
+      config_file: ${{ env.config_file }}
+      test_framework: ${{ env.test_framework }}
+      test_file_path: ${{ env.test_file_path }}
+      source_dir: ${{ env.source_dir }}
+      language_type: ${{ env.language_type }}
+      dell_sonarqube_url: ${{ env.dell_sonarqube_url }}
+    steps:
+      - run: echo 'Loading env vars'
