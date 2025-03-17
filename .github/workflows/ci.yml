@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v3
+      #   with:
+      #     dotnet-version: '6.x'
+
+      - name: Restore dependencies
+        run: echo "dotnet restore"
+        shell: bash
+      - name: Build
+        shell: bash
+        run: echo "dotnet build --configuration Release"
+      - name: Test
+        shell: bash
+        run: echo "dotnet test --configuration Release"
+      - name: Publish
+        shell: bash
+        run: echo "dotnet publish --configuration Release --output ./artifacts"
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: drop
+          path: ./publish
