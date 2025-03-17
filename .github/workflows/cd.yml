@@ -1,0 +1,72 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI"]  # Must match the name of the CI workflow exactly
+    types:
+      - completed  # Trigger when the CI workflow completes
+
+jobs:
+  check-ci-success:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug CI Workflow Conclusion
+        run: |
+          echo "CI Workflow Conclusion: ${{ github.event.workflow_run.conclusion }}"
+          if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+            echo "CI workflow did not succeed. Exiting..."
+            exit 1
+          else
+            echo "CI workflow succeeded. Proceeding with deployment..."
+          fi
+
+  deploy-dev:
+    runs-on: windows-latest
+    needs: check-ci-success  # Ensure CI succeeded before proceeding
+    environment: dev  # GitHub environment for dev
+    steps:
+      - name: Download artifacts from CI
+        uses: actions/download-artifact@v3
+        with:
+          name: drop
+          path: ./publish
+
+      - name: Deploy to Dev
+        run: |
+          echo "Deploying to Dev environment..."
+          # Add your deployment script for dev here
+          # Example: az webapp deploy --resource-group my-resource-group --name my-app-dev --src-path ./publish
+
+  deploy-test:
+    runs-on: windows-latest
+    needs: deploy-dev  # Test stage depends on Dev stage
+    environment: test  # GitHub environment for test
+    steps:
+      - name: Download artifacts from CI
+        uses: actions/download-artifact@v3
+        with:
+          name: drop
+          path: ./publish
+
+      - name: Deploy to Test
+        run: |
+          echo "Deploying to Test environment..."
+          # Add your deployment script for test here
+          # Example: az webapp deploy --resource-group my-resource-group --name my-app-test --src-path ./publish
+
+  deploy-prod:
+    runs-on: windows-latest
+    needs: deploy-test  # Prod stage depends on Test stage
+    environment: prod  # GitHub environment for prod
+    steps:
+      - name: Download artifacts from CI
+        uses: actions/download-artifact@v3
+        with:
+          name: drop
+          path: ./publish
+
+      - name: Deploy to Prod
+        run: |
+          echo "Deploying to Prod environment..."
+          # Add your deployment script for prod here
+          # Example: az webapp deploy --resource-group my-resource-group --name my-app-prod --src-path ./publish
